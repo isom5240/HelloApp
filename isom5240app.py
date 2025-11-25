@@ -1,40 +1,69 @@
+
+
 # Program title: Storytelling App
 
+# import part
 import streamlit as st
 from transformers import pipeline
-from PIL import Image
 
-# -------------------------------
-# Load Hugging Face pipelines
-# -------------------------------
-st.title("🖼️ Image-to-Text and Text-to-Speech App")
+# function part
+# img2text
+def img2text(url):
+    image_to_text_model = pipeline("image-to-text", model="Salesforce/blip-image-captioning-base")
+    text = image_to_text_model(url)[0]["generated_text"]
+    return text
 
-# Load models
-image_to_text = pipeline("image-to-text", model="nlpconnect/vit-gpt2-image-captioning")
-text_to_speech = pipeline("text-to-speech", model="facebook/mms-tts-eng")
+# text2story
+def text2story(text):
+    pipe = pipeline("text-generation", model="pranavpsv/genre-story-generator-v2")
+    story_text = pipe(text)[0]['generated_text']
+    return story_text
 
-# -------------------------------
-# Streamlit UI
-# -------------------------------
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+# text2audio
+def text2audio(story_text):
+    pipe = pipeline("text-to-audio", model="Matthijs/mms-tts-eng")
+    audio_data = pipe(story_text)
+    return audio_data
 
-if uploaded_file is not None:
-    # Display uploaded image
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    # Step 1: Image-to-Text
-    st.write("### Extracting text from image...")
-    text_output = image_to_text(image)[0]['generated_text']
-    st.write("**Extracted Text:**", text_output)
+def main():
+    st.set_page_config(page_title="Your Image to Audio Story", page_icon="🦜")
+    st.header("Turn Your Image to Audio Story")
+    uploaded_file = st.file_uploader("Select an Image...")
 
-    # Step 2: Text-to-Speech
-    st.write("### Generating speech...")
-    speech_output = text_to_speech(text_output)
+    if uploaded_file is not None:
+        print(uploaded_file)
+        bytes_data = uploaded_file.getvalue()
+        with open(uploaded_file.name, "wb") as file:
+            file.write(bytes_data)
+        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
-    # Get the audio array and sample rate
-    audio_array = speech_output["audio"]
-    sample_rate = speech_output["sampling_rate"]
-   
-    # Play audio directly using Streamlit
-    st.audio(audio_array, sample_rate=sample_rate)
+
+        #Stage 1: Image to Text
+        st.text('Processing img2text...')
+        scenario = img2text(uploaded_file.name)
+        st.write(scenario)
+
+        #Stage 2: Text to Story
+        st.text('Generating a story...')
+        story = text2story(scenario)
+        st.write(story)
+
+        #Stage 3: Story to Audio data
+        st.text('Generating audio data...')
+        audio_data =text2audio(story)
+
+        # Play button
+        if st.button("Play Audio"):
+            # Get the audio array and sample rate
+            audio_array = speech_output["audio"]
+            sample_rate = speech_output["sampling_rate"]
+            
+            # Play audio directly using Streamlit
+            st.audio(audio_array, 
+                     sample_rate=sample_rate)
+
+
+if __name__ == "__main__":
+    main()
+    
