@@ -1,5 +1,3 @@
-
-
 # Program title: Simple Storytelling App (Text to Story + Audio)
 
 import streamlit as st
@@ -28,3 +26,7 @@ if user_text:
     if st.button("Play Audio"):
         audio_array = speech_output["audio"]
         sample_rate = speech_output["sampling_rate"]
+        # Play audio directly using Streamlit
+        st.audio(audio_array,
+                 sample_rate=sample_rate)
+        
