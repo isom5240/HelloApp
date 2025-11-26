@@ -1,32 +1,38 @@
-# Program title: Simple Storytelling App (Text to Story + Audio)
+
 
 import streamlit as st
 from transformers import pipeline
+from transformers import AutoModelForSequenceClassification
+from transformers import AutoTokenizer
+import torch
+import numpy as np
 
-# Set up the page
-st.set_page_config(page_title="Text to Audio Story", page_icon="🦜")
-st.header("Turn Your Text into an Audio Story")
+def main():
 
-# User enters text
-user_text = st.text_area("Enter a prompt or scenario for your story:")
 
-if user_text:
-    # Stage 1: Text to Story
-    st.text('Generating a story...')
-    story_generator = pipeline("text-generation", model="pranavpsv/genre-story-generator-v2")
-    story = story_generator(user_text)[0]['generated_text']
-    st.write(story)
+    st.title("yelp2024fall Test")
+    st.write("Enter a sentence for analysis:")
 
-    # Stage 2: Story to Audio
-    st.text('Generating audio data...')
-    audio_generator = pipeline("text-to-audio", model="Matthijs/mms-tts-eng")
-    speech_output = audio_generator(story)
+    user_input = st.text_input("")
+    if user_input:
+        # Approach: AutoModel
+        model2 = AutoModelForSequenceClassification.from_pretrained("isom5240/test2025fall",
+                                                                    num_labels=5)
+        tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 
-    # Play button
-    if st.button("Play Audio"):
-        audio_array = speech_output["audio"]
-        sample_rate = speech_output["sampling_rate"]
-        # Play audio directly using Streamlit
-        st.audio(audio_array,
-                 sample_rate=sample_rate)
-        
+        inputs = tokenizer(user_input,
+                        padding=True,
+                        truncation=True,
+                        return_tensors='pt')
+
+        outputs = model2(**inputs)
+        predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
+        predictions = predictions.cpu().detach().numpy()
+        # Get the index of the largest output value
+        max_index = np.argmax(predictions)
+        st.write(f"result (AutoModel) - Label: {max_index}")
+
+
+if __name__ == "__main__":
+    main()
+    
