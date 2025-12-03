@@ -1,38 +1,39 @@
 
 
+
 import streamlit as st
 from transformers import pipeline
-from transformers import AutoModelForSequenceClassification
-from transformers import AutoTokenizer
-import torch
-import numpy as np
+from PIL import Image
 
-def main():
+# Streamlit UI
+st.title("Age Classification using ViT")
+
+# Load the age classification pipeline
+@st.cache_resource
+def load_model():
+    return pipeline("image-classification", model="nateraw/vit-age-classifier")
+
+age_classifier = load_model()
+
+# File uploader for image input
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    # Display uploaded image
+    image = Image.open(uploaded_file).convert("RGB")
+    st.image(image, caption="Uploaded Image", use_column_width=True)
+
+    # Classify age
+    with st.spinner("Classifying age..."):
+        age_predictions = age_classifier(image)
+        age_predictions = sorted(age_predictions, key=lambda x: x['score'], reverse=True)
+
+    # Display results
+    st.subheader("Predicted Age Range:")
+    st.write(f"**Age range:** {age_predictions[0]['label']}")
+    st.write("Full Predictions:")
+    for pred in age_predictions:
+        st.write(f"{pred['label']}: {pred['score']:.4f}")
 
 
-    st.title("yelp2024fall Test")
-    st.write("Enter a sentence for analysis:")
 
-    user_input = st.text_input("")
-    if user_input:
-        # Approach: AutoModel
-        model2 = AutoModelForSequenceClassification.from_pretrained("isom5240/test2025fall",
-                                                                    num_labels=5)
-        tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
-
-        inputs = tokenizer(user_input,
-                        padding=True,
-                        truncation=True,
-                        return_tensors='pt')
-
-        outputs = model2(**inputs)
-        predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
-        predictions = predictions.cpu().detach().numpy()
-        # Get the index of the largest output value
-        max_index = np.argmax(predictions)
-        st.write(f"result (AutoModel) - Label: {max_index}")
-
-
-if __name__ == "__main__":
-    main()
-    
