@@ -10,9 +10,5 @@ answer = pipe(messages)[0]['generated_text'][1]['content']
 
 st.write(answer)
 
-###########requirements.txt############
-streamlit
-transformers
-torch
-write("ISOM5240")
+
 
