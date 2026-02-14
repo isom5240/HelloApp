@@ -8,6 +8,7 @@ messages = [
 ]
 answer = pipe(messages)[0]['generated_text'][1]['content']
 
+st.title("ISOM5240")
 st.write(answer)
 
 
