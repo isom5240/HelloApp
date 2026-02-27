@@ -1,38 +1,25 @@
-
-
-
 import streamlit as st
-from transformers import pipeline
+from PIL import Image
+import time
 
-# Use st.cache_resource to load the model once across all user sessions
-@st.cache_resource
-def get_model():
-    # Load a pre-trained sentiment-analysis model from the Hugging Face Model Hub
-    # You can find other models at https://huggingface.co/models
-    model = pipeline("sentiment-analysis")
-    return model
+# App title
+st.title("Streamlit Demo on Hugging Face")
 
-st.title("Hugging Face Sentiment Analysis Demo")
+# Write some text
+st.write("Welcome to a demo app showcasing basic Streamlit components!")
 
-st.markdown("Enter text below to classify its sentiment (positive or negative).")
+# File uploader for image and audio
+uploaded_image = st.file_uploader("Upload an image",
+                                  type=["jpg", "jpeg", "png"])
 
-# Get the model
-sentiment_pipeline = get_model()
+# Display image with spinner
+if uploaded_image is not None:
+    with st.spinner("Loading image..."):
+        time.sleep(1)  # Simulate a delay
+        image = Image.open(uploaded_image)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
 
-# Create an input text box for the user
-input_text = st.text_input("Enter your text here:", "I love building AI apps with Streamlit!")
-
-# Create a button to trigger the analysis
-if st.button("Analyze Sentiment"):
-    if input_text:
-        # Perform inference using the loaded model
-        result = sentiment_pipeline(input_text)
-        label = result[0]['label']
-        score = result[0]['score']
-
-        st.write("---")
-        st.write(f"**Prediction:** {label}")
-        st.write(f"**Confidence Score:** {score:.2f}")
-        st.write("---")
-    else:
-        st.warning("Please enter some text for analysis.")
+# Button interaction
+if st.button("Click Me"):
+    st.write("🎉 You clicked the button!")
+    
