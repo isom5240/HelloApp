@@ -1,25 +1,28 @@
+
+import os
 import streamlit as st
+from transformers import pipeline
 from PIL import Image
-import time
 
-# App title
-st.title("Streamlit Demo on Hugging Face")
+st.title("Image-to-Text and Text-to-Speech App")
 
-# Write some text
-st.write("Welcome to a demo app showcasing basic Streamlit components!")
+image_to_text = pipeline(
+  "image-to-text", model="nlpconnect/vit-gpt2-image-captioning")
+text_to_speech = pipeline(
+  "text-to-speech", model="facebook/mms-tts-eng")
 
-# File uploader for image and audio
-uploaded_image = st.file_uploader("Upload an image",
-                                  type=["jpg", "jpeg", "png"])
-
-# Display image with spinner
-if uploaded_image is not None:
-    with st.spinner("Loading image..."):
-        time.sleep(1)  # Simulate a delay
-        image = Image.open(uploaded_image)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
-
-# Button interaction
-if st.button("Click Me"):
-    st.write("🎉 You clicked the button!")
-    
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+if uploaded_file:
+  image = Image.open(uploaded_file)
+  st.image(image)
+  
+  caption = image_to_text(image)[0]["generated_text"]
+  st.write("Caption:", caption)
+  
+  audio = text_to_speech(caption)
+  audio_path = "speech.wav"
+  with open(audio_path, "wb") as f:
+    f.write(audio["audio"])
+  
+  st.audio(audio_path)
+  
