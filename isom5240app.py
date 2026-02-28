@@ -6,11 +6,11 @@ import streamlit as st
 
 
 # function part
-def ageClassifier(imgFilename):
+def ageClassifier(imgFilename, modelName):
     # Load the age classification pipeline
     # The code below should be placed in the main part of the program
     age_classifier = pipeline("image-classification", 
-                              model="prithivMLmods/Age-Classification-SigLIP2")
+                              model=modelName)
     
     image_name = imgFilename
     image_name = Image.open(image_name).convert("RGB")
@@ -28,7 +28,8 @@ def main():
     
 
 
-    age_predictions = ageClassifier("middleagedMan.jpg")
+    age_predictions = ageClassifier("middleagedMan.jpg",
+                                   "prithivMLmods/Age-Classification-SigLIP2")
 
 
 
