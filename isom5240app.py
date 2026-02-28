@@ -21,19 +21,7 @@ def ageClassifier(imgFilename, modelName):
     return age_predictions
 
 
-
-def main():
-    # Streamlit UI
-    st.header("Title: Age Classification using ViT")
-    
-
-
-    age_predictions = ageClassifier("middleagedMan.jpg",
-                                   "prithivMLmods/Age-Classification-SigLIP2")
-
-
-
-  
+def output_msg(age_predictions):
     st.write(age_predictions)
     age_predictions = sorted(age_predictions, key=lambda x: x['score'], reverse=True)
     
@@ -41,7 +29,24 @@ def main():
     st.write("Predicted Age Range:")
     st.write(f"Age range: {age_predictions[0]['label']}")
     
-    st.write("Done")
+    st.write("Done")    
+
+
+
+def main():
+    # Streamlit UI
+    st.header("Title: Age Classification using ViT")
+    
+
+
+#    age_predictions = ageClassifier("middleagedMan.jpg",
+#                                   "prithivMLmods/Age-Classification-SigLIP2")
+    age_predictions = ageClassifier("middleagedMan.jpg",
+                                   "akashmaggon/vit-base-age-classification")
+    output_msg(age_predictions)
+
+  
+
 
 
 # main part
