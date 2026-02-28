@@ -49,7 +49,7 @@ def main():
 
         #Stage 3: Story to Audio data
         st.text('Generating audio data...')
-        audio_data = text2audio(story)
+        audio_data =text2audio(story)
 
         # Play button
         if st.button("Play Audio"):
@@ -64,4 +64,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
