@@ -54,8 +54,8 @@ def main():
         # Play button
         if st.button("Play Audio"):
             # Get the audio array and sample rate
-            audio_array = speech_output["audio"]
-            sample_rate = speech_output["sampling_rate"]
+            audio_array = audio_data["audio"]
+            sample_rate = audio_data["sampling_rate"]
 
             # Play audio directly using Streamlit
             st.audio(audio_array,
