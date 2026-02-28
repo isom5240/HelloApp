@@ -16,10 +16,18 @@ text = st.text_area("Enter the text to classify", "")
 # Perform text classification when the user clicks the "Classify" button
 if st.button("Classify"):
     # Perform text classification on the input text
-    result = classifier(text)[0]
+    results = classifier(text)[0]
 
     # Display the classification result
+    max_score = float('-inf')
+    max_label = ''
+
+    for result in results:
+        if result['score'] > max_score:
+            max_score = result['score']
+            max_label = result['label']
+
     st.write("Text:", text)
-    st.write("Label:", result['score'])
-    st.write("Score:", result['label'])
-    
+    st.write("Label:", max_label)
+    st.write("Score:", max_score)
+  
