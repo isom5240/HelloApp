@@ -16,7 +16,7 @@ text = st.text_area("Enter the text to classify", "")
 # Perform text classification when the user clicks the "Classify" button
 if st.button("Classify"):
     # Perform text classification on the input text
-    results = classifier(text)[0]
+    result = classifier(text)[0]
 
     # Display the classification result
     st.write("Text:", text)
