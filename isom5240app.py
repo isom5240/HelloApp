@@ -28,7 +28,7 @@ def text2audio(story_text):
 def main():
     st.set_page_config(page_title="Your Image to Audio Story", page_icon="🦜")
     st.header("Turn Your Image to Audio Story")
-    uploaded_file = st.file_uploader("Select an Image...")
+    uploaded_file = st.camera_input("Take a picture")
 
     if uploaded_file is not None:
         print(uploaded_file)
