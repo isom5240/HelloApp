@@ -4,7 +4,7 @@ import streamlit as st
 from transformers import pipeline
 
 def main():
-    sentiment_pipeline = pipeline(model="distilbert/distilbert-base-uncased-finetuned-sst-2-english")
+    sentiment_pipeline = pipeline(model="isom5240/2026Spring5240L1")
 
     st.title("Sentiment Analysis with HuggingFace Spaces")
     st.write("Enter a sentence to analyze its sentiment:")
