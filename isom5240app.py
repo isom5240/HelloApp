@@ -27,6 +27,6 @@ predictions = predictions.cpu().detach().numpy()
 # Get the index of the largest output value
 max_index = np.argmax(predictions)
 
-st.header("Testing App")
+st.title("Testing App")
 #print(f"The label is {label} and the predicted label is {max_index}")
 st.write(f"The label is {label} and the predicted label is {max_index}")
